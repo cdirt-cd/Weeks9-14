@@ -9,26 +9,28 @@ public class PlayerController : MonoBehaviour
     private Collider2D col;
     private Coroutine dodgeCooldownCoroutine;
 
-    // Movement variables
-    [SerializeField] private float moveSpeed = 5f;
+    
+   
 
     private void Start()
-    {
+    {// initialize the player controller with the rigidbody and collider components
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
 
+        // subscribe to the OnPlayerDeath event from the DamageManager
         DamageManager dm = FindObjectOfType<DamageManager>();
         if (dm != null)
-        {
+        {// check if the DamageManager is not null
             dm.OnPlayerDeath.AddListener(HandleDeath);
         }
     }
 
+    private float moveSpeed = 5f;
+
     private void Update()
-    {
+    {// handle player movement and dodge cooldown
         if (Dead) return;
 
-        // Handle player movement
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
 
@@ -36,6 +38,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = movement;
     }
 
+    /// handle dodge cooldown
     public void StartDodgeCooldown()
     {
         if (dodgeCooldownCoroutine != null)
@@ -43,7 +46,7 @@ public class PlayerController : MonoBehaviour
 
         dodgeCooldownCoroutine = StartCoroutine(DodgeCooldown());
     }
-
+    // coroutine to manage the dodge cooldown
     private IEnumerator DodgeCooldown()
     {
         float cooldownTime = 5f;
@@ -63,7 +66,7 @@ public class PlayerController : MonoBehaviour
 
         Debug.Log("Dodge is ready again.");
     }
-
+    /// handle player death
     private void HandleDeath()
     {
         if (Dead) return;
@@ -76,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
         Debug.Log("PlayerController: Dead event handled.");
     }
-
+    /// reset the dodge cooldown when the player picks up an upgrade
     public void ResetDodgeCooldown()
     {
         if (Dead) return;
