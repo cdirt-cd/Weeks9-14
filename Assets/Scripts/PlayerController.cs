@@ -9,6 +9,9 @@ public class PlayerController : MonoBehaviour
     private Collider2D col;
     private Coroutine dodgeCooldownCoroutine;
 
+    // Movement variables
+    [SerializeField] private float moveSpeed = 5f;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -21,7 +24,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    
+    private void Update()
+    {
+        if (Dead) return;
+
+        // Handle player movement
+        float moveX = Input.GetAxis("Horizontal");
+        float moveY = Input.GetAxis("Vertical");
+
+        Vector2 movement = new Vector2(moveX, moveY) * moveSpeed;
+        rb.velocity = movement;
+    }
+
     public void StartDodgeCooldown()
     {
         if (dodgeCooldownCoroutine != null)
@@ -29,7 +43,6 @@ public class PlayerController : MonoBehaviour
 
         dodgeCooldownCoroutine = StartCoroutine(DodgeCooldown());
     }
-
 
     private IEnumerator DodgeCooldown()
     {
@@ -51,7 +64,6 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Dodge is ready again.");
     }
 
-  
     private void HandleDeath()
     {
         if (Dead) return;
@@ -64,6 +76,7 @@ public class PlayerController : MonoBehaviour
 
         Debug.Log("PlayerController: Dead event handled.");
     }
+
     public void ResetDodgeCooldown()
     {
         if (Dead) return;
@@ -76,5 +89,4 @@ public class PlayerController : MonoBehaviour
 
         Debug.Log("Dodge cooldown reset by upgrade.");
     }
-
 }
