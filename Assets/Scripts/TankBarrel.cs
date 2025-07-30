@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class TankBarrel : MonoBehaviour
 {
+    public GameObject tankBulletPrefab;
+
+    public float tankBulletMoveDuration = 0f;
+
+    public AudioSource tankBarrelFired;
+
+
+
     private Camera gameCamera;
 
     //private GameObject tankBarrel;
@@ -32,5 +40,29 @@ public class TankBarrel : MonoBehaviour
 
         //Set the transform.up to be in the direction of the mouse
         transform.right = direction;
+
+
+        bool spaceClick = Input.GetKeyDown(KeyCode.Space);
+
+        if (spaceClick)
+        {
+            GameObject spawnedTankBullets = Instantiate(tankBulletPrefab, transform.position, Quaternion.identity);
+            Debug.Log(spawnedTankBullets.name);
+
+           
+
+            TankBullet tankBulletScript = spawnedTankBullets.GetComponent<TankBullet>();
+            if (tankBulletScript == null)
+            {
+                Debug.Log("Script not found");
+            }
+            else
+            {
+                tankBulletScript.moveDuration = tankBulletMoveDuration;
+            }
+            tankBarrelFired.Play();
+
+
+        }
     }
 }
