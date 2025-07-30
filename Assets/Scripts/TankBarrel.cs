@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class TankBarrel : MonoBehaviour
 {
-    public Camera gameCamera;
+    private Camera gameCamera;
+
+    //private GameObject tankBarrel;
 
     // Start is called before the first frame update
     void Start()
     {
+        gameCamera = Camera.main;
 
+        //tankBarrel = GameObject.FindObjectOfType<TankBarrel>().gameObject;
     }
 
     // Update is called once per frame
@@ -27,6 +31,6 @@ public class TankBarrel : MonoBehaviour
         Vector3 direction = end - start;
 
         //Set the transform.up to be in the direction of the mouse
-        transform.up = direction;
+        transform.right = direction;
     }
 }
