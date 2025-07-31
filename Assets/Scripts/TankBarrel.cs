@@ -6,7 +6,7 @@ public class TankBarrel : MonoBehaviour
 {
     public GameObject tankBulletPrefab;
 
-    public float tankBulletMoveDuration = 0f;
+    public float tankBulletMoveDuration = 5f;
 
     public AudioSource tankBarrelFired;
 
