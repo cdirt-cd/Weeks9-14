@@ -11,40 +11,49 @@ public class CuckooClock : MonoBehaviour
     public float hourDuration = 4f;
 
     private float currentTime = 0f;
-
     private Coroutine activeClockCoroutine;
+    private IEnumerator activeHandsCoroutine;
+
 
     // Start is called before the first frame update
     void Start()
     {
         chime = gameObject.GetComponentInChildren<Chime>();
-        Debug.Log("Do I have a chime?[" + chime + "]");
-
-        activeClockCoroutine = StartCoroutine(ClockUpdate());
+        //activeClockCoroutine = StartCoroutine(ClockUpdate());
     }
 
     // Update is called once per frame
     void Update()
     {
-        StopCoroutine(activeClockCoroutine);
+
     }
 
     public void Stop()
     {
-        StopCoroutine(ClockUpdate());
-
+        Debug.Log("Stopping the coroutine");
+        if (activeClockCoroutine != null)
+        {
+            StopCoroutine(activeClockCoroutine);
+        }
+        if (activeHandsCoroutine != null)
+        {
+            StopCoroutine(activeHandsCoroutine);
+        }
     }
-
 
     IEnumerator ClockUpdate()
     {
+        Debug.Log("Starting clock update");
         //When ClockUpdate coroutine finishes - we want to start it again
         while (true)
         {
-            yield return StartCoroutine(MoveHandsAnHour());
+            //We use this syntax specifically when we're yield returning the StartCoroutine
+            //And can't access the return value of StartCoroutine
+            activeHandsCoroutine = MoveHandsAnHour();
+            yield return StartCoroutine(activeHandsCoroutine);
         }
 
-        
+        //Debug.Log("We've reached the end of the ClockUpdate coroutine");
     }
 
     IEnumerator MoveHandsAnHour()
@@ -67,8 +76,17 @@ public class CuckooClock : MonoBehaviour
             //When we've hit an hour of time, the clock is going to "chime"
             if (currentTime > hourDuration)
             {
-                //It's time to chime
-                chime.PlayChime();
+                if (chime == null)
+                {
+                    Debug.Log("We have not assigned the chime as a child of this object");
+                }
+                else
+                {
+                    currentHour++;
+                    //It's time to chime
+                    chime.PlayChime();
+                }
+
             }
 
             yield return null;
