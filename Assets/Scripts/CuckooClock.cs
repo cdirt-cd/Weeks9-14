@@ -6,48 +6,73 @@ public class CuckooClock : MonoBehaviour
 {
     public Transform hourHand, minuteHand;
 
-    public float hourDuration = 4f;
-
     public Chime chime;
 
+    public float hourDuration = 4f;
+
     private float currentTime = 0f;
+
+    private Coroutine activeClockCoroutine;
+
     // Start is called before the first frame update
     void Start()
     {
         chime = gameObject.GetComponentInChildren<Chime>();
+        Debug.Log("Do I have a chime?[" + chime + "]");
+
+        activeClockCoroutine = StartCoroutine(ClockUpdate());
     }
 
     // Update is called once per frame
     void Update()
     {
+        StopCoroutine(activeClockCoroutine);
+    }
 
-        StartCoroutine(ClockUpdate());
+    public void Stop()
+    {
+        StopCoroutine(ClockUpdate());
 
     }
 
+
     IEnumerator ClockUpdate()
     {
+        //When ClockUpdate coroutine finishes - we want to start it again
+        while (true)
+        {
+            yield return StartCoroutine(MoveHandsAnHour());
+        }
+
+        
+    }
+
+    IEnumerator MoveHandsAnHour()
+    {
+        currentTime = 0f;
         while (currentTime < hourDuration)
         {
-
-
-
             currentTime += Time.deltaTime;
 
-            minuteHand.eulerAngles -= Vector3.forward * 360 * Time.deltaTime / hourDuration;
-
+            //Move the hour hand clockwise
             hourHand.eulerAngles -= Vector3.forward * 360 * Time.deltaTime / hourDuration / 12;
 
+            //Move the minute hand clockwise
+            //When an hour has passed (4 seconds), the minute hand should move -360 degrees
+
+            //Vector3.forward gives us just the z value which we can use to rotate the object
+            //along the z-axis (which rotates us in 2D)
+            minuteHand.eulerAngles -= Vector3.forward * 360 * Time.deltaTime / hourDuration;
+
+            //When we've hit an hour of time, the clock is going to "chime"
             if (currentTime > hourDuration)
             {
+                //It's time to chime
                 chime.PlayChime();
-
-                currentTime = 0f;
-
             }
 
             yield return null;
-
         }
+        Debug.Log("We've finished MoveHandsAnHour coroutine");
     }
 }
