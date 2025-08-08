@@ -82,7 +82,7 @@ public class CuckooClock : MonoBehaviour
                 }
                 else
                 {
-                    currentHour++;
+                    //currentHour++;
                     //It's time to chime
                     chime.PlayChime();
                 }
